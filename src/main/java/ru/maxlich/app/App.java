@@ -3,7 +3,7 @@ package ru.maxlich.app;
 import ru.maxlich.app.file.FileLineReader;
 import ru.maxlich.app.file.FileLineWriter;
 import ru.maxlich.app.file.FileUniqueLineReader;
-import ru.maxlich.app.processing.LineGroupsFinder;
+import ru.maxlich.app.processing.finder.LineGroupsFinder;
 import ru.maxlich.app.processing.LineGroupsProcessor;
 
 import java.io.IOException;

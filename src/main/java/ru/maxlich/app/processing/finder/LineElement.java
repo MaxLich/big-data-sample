@@ -1,4 +1,4 @@
-package ru.maxlich.app.processing;
+package ru.maxlich.app.processing.finder;
 
 /**
  * Created by mshulakov on 27.04.2018.

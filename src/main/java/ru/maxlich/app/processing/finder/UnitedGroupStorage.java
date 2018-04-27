@@ -1,4 +1,4 @@
-package ru.maxlich.app.processing;
+package ru.maxlich.app.processing.finder;
 
 import java.util.HashMap;
 import java.util.Map;

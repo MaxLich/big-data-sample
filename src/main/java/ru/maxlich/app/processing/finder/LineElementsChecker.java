@@ -1,4 +1,4 @@
-package ru.maxlich.app.processing;
+package ru.maxlich.app.processing.finder;
 
 import java.util.ArrayList;
 import java.util.List;
