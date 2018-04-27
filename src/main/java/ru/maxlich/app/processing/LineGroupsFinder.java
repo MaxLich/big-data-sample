@@ -10,6 +10,8 @@ public class LineGroupsFinder {
     private List<String> lines; //строки, которые будем обрабатывать
     private final List<List<String>> linesGroups; //списки групп строк, которые получаем в результате обработки
 
+    private ColumnStorage columnStorage = ColumnStorage.getInstance();
+
     public LineGroupsFinder(List<String> lines) {
         this.lines = lines;
         linesGroups = new ArrayList<>();
@@ -31,21 +33,22 @@ public class LineGroupsFinder {
 
     //вспомогательный метод для обработки строк
     private void processAllLines(List<String> lines) {
-        List<Map<String, Integer>> columns = new ArrayList<>(); // список стобцов, каждый столбец - мапа с парами "элемент строки/столбца - номер группы"
+        //List<Map<String, Integer>> columns = new ArrayList<>(); // список стобцов, каждый столбец - мапа с парами "элемент строки/столбца - номер группы"
         Map<Integer, Integer> unitedGroups = new HashMap<>(); //мэп с парами "номер некоторой группы - номер группы, с которой надо объединить данную группу"
 
         TreeSet<Integer> groupsWithSameElems = new TreeSet<>(); //список групп, имеющих совпадающие элементы
-        List<NewLineElement> newElements = new ArrayList<>(); //список элементов, которых нет в мапах столбцов
+        List<LineElement> newElements = new ArrayList<>(); //список элементов, которых нет в мапах столбцов
 
         for (String line : lines) {
             groupsWithSameElems.clear();
             newElements.clear();
 
             String[] lineElements = line.split(";");
-            walkLineElements(lineElements, columns, unitedGroups, groupsWithSameElems, newElements);
+            walkLineElements(lineElements,/* columns, */unitedGroups, groupsWithSameElems, newElements);
 
             int groupNumber = getGroupNumber(groupsWithSameElems);
-            putNewElementsToColumns(columns, newElements, groupNumber);
+            //putNewElementsToColumns(columns, newElements, groupNumber);
+            columnStorage.putNewElementsToColumns(newElements,groupNumber);
             checkGroups(unitedGroups, groupsWithSameElems, groupNumber);
 
             linesGroups.get(groupNumber).add(line);
@@ -65,11 +68,11 @@ public class LineGroupsFinder {
         }
     }
 
-    private void putNewElementsToColumns(List<Map<String, Integer>> columns, List<NewLineElement> newElements, int groupNumber) {
+   /* private void putNewElementsToColumns(List<Map<String, Integer>> columns, List<LineElement> newElements, int groupNumber) {
         for (NewLineElement newLineElement : newElements) {
             columns.get(newLineElement.columnNum).put(newLineElement.lineElement, groupNumber);
         }
-    }
+    }*/
 
     private int getGroupNumber(TreeSet<Integer> groupsWithSameElems) {
         if (groupsWithSameElems.isEmpty()) {
@@ -80,23 +83,25 @@ public class LineGroupsFinder {
         }
     }
 
-    private void walkLineElements(String[] lineElements, List<Map<String, Integer>> columns, Map<Integer, Integer> unitedGroups,
-                                  TreeSet<Integer> groupsWithSameElems, List<NewLineElement> newElements) {
+    private void walkLineElements(String[] lineElements, /*List<Map<String, Integer>> columns, */Map<Integer, Integer> unitedGroups,
+                                  TreeSet<Integer> groupsWithSameElems, List<LineElement> newElements) {
         for (int elmIndex = 0; elmIndex < lineElements.length; elmIndex++) {
             String currLnElem = lineElements[elmIndex];
-            if (columns.size() == elmIndex)
-                columns.add(new HashMap<>());
+            /*if (columns.size() == elmIndex)
+                columns.add(new HashMap<>());*/
+            columnStorage.addColumnIfNotExists(elmIndex);
             if ("".equals(currLnElem.replaceAll("\"","").trim()))
                 continue;
 
-            Map<String, Integer> currCol = columns.get(elmIndex);
-            Integer elemGrNum = currCol.get(currLnElem);
+/*            Map<String, Integer> currCol = columns.get(elmIndex);
+            Integer elemGrNum = currCol.get(currLnElem);*/
+            Integer elemGrNum = columnStorage.getGroupNumberBy(elmIndex, currLnElem);
             if (elemGrNum != null) {
                 while (unitedGroups.containsKey(elemGrNum)) // если группа с таким номером объединена с другой,
                     elemGrNum = unitedGroups.get(elemGrNum); //то сохраняем номер группы, с которой была объединена данная
                 groupsWithSameElems.add(elemGrNum);
             } else {
-                newElements.add(new NewLineElement(currLnElem, elmIndex));
+                newElements.add(new LineElement(currLnElem, elmIndex));
             }
         }
     }
@@ -112,7 +117,7 @@ public class LineGroupsFinder {
     }
 
     //служебный класс для элементов строки, которые мы ещё не встречали в столбце
-    static class NewLineElement {
+  /*  static class NewLineElement {
         private String lineElement;
         private int columnNum;
 
@@ -120,5 +125,5 @@ public class LineGroupsFinder {
             this.lineElement = lineElement;
             this.columnNum = columnNum;
         }
-    }
+    }*/
 }
