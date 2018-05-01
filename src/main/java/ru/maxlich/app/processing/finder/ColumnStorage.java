@@ -15,39 +15,52 @@ public class ColumnStorage {
 
     private List<Map<String, Integer>> columns = new ArrayList<>(); // список стобцов, каждый столбец - мапа с парами "элемент строки/столбца - номер группы"
 
-    public void addColumnIfNotExists(int columnNumber) {
+    public boolean addColumnIfNotExists(int columnNumber) {
+        if (columnNumber < 0)
+            return false;
+
         int lastIndex = columns.size() - 1;
         int diff = lastIndex - columnNumber;
         if (diff < 0) {
             for (int i = 0; i < Math.abs(diff); i++) {
                 columns.add(new HashMap<>());
             }
+            return true;
         }
+
+        return false;
     }
 
     public Integer getGroupNumberBy(int colNum, String elem) {
-        return columns.get(colNum).get(elem);
+        if (colNum < 0)
+            return null;
+
+        addColumnIfNotExists(colNum);
+        Map<String, Integer> column = columns.get(colNum);
+        return (column == null) ? null : column.get(elem);
     }
 
     public void putNewElementsToColumns(List<LineElement> newElements, int groupNumber) {
         for (LineElement newLineElement : newElements) {
-            columns.get(newLineElement.getColumnNum()).put(newLineElement.getLineElement(), groupNumber);
+            int colNum = newLineElement.getColumnNum();
+            addColumnIfNotExists(colNum);
+            columns.get(colNum).put(newLineElement.getLineElement(), groupNumber);
         }
     }
 
-    /*public static void main(String[] args) {
-        ColumnStorage columnStorage = ColumnStorage.getInstance();
-        columnStorage.addColumnIfNotExists(0);
-        columnStorage.addColumnIfNotExists(1);
-        columnStorage.putNewElementsToColumns(
-                Arrays.asList(
-                        new LineElement("x", 0)
-                        , new LineElement("y", 0)
-                        , new LineElement("a", 1))
-                , 0);
+    public void putNewElement(LineElement newLineElement, int groupNumber) {
+        int colNum = newLineElement.getColumnNum();
+        addColumnIfNotExists(colNum);
+        columns.get(colNum).put(newLineElement.getLineElement(), groupNumber);
+    }
 
-        Integer o = columnStorage.getGroupNumberBy(0, "o");
-        System.out.println(o);
-    }*/
+
+    public int getColumnCount() {
+        return columns.size();
+    }
+
+    public void clear() {
+        columns.clear();
+    }
 
 }

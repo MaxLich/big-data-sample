@@ -7,9 +7,10 @@ import java.util.TreeSet;
 /**
  * Created by mshulakov on 27.04.2018.
  */
+// проверяет элементы строки на повторы в соот-щих столбцах
 public class LineElementsChecker {
-    private ColumnStorage columnStorage = ColumnStorage.getInstance();
-    private UnitedGroupStorage unitedGroupStorage = UnitedGroupStorage.getInstance();
+    private final ColumnStorage columnStorage = ColumnStorage.getInstance();
+    private final UnitedGroupStorage unitedGroupStorage = UnitedGroupStorage.getInstance();
 
     private TreeSet<Integer> groupsWithSameElems = new TreeSet<>(); //список групп, имеющих совпадающие элементы
     private List<LineElement> newElements = new ArrayList<>(); //список элементов, которых нет в мапах столбцов
