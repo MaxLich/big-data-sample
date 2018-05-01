@@ -1,9 +1,6 @@
 package ru.maxlich.app.processing.finder;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +11,14 @@ import static org.junit.Assert.*;
 public class ColumnStorageTest {
     private static ColumnStorage columnStorage;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUpAll() throws Exception {
         columnStorage = ColumnStorage.getInstance();
+    }
+
+    @AfterClass
+    public static void tearDownAll() throws Exception {
+        columnStorage = null;
     }
 
     @After
