@@ -20,10 +20,10 @@ public class LineGroupsFinder {
 
     //группировка строк, главный метод
     public List<List<String>> find() {
-        if (lines == null)
+        if (lines == null || lines.isEmpty())
             return Collections.emptyList();
 
-       if (lines.size() < 2) {
+       if (lines.size() == 1) {
             lineGroups.add(lines);
             return lineGroups;
         }

@@ -60,13 +60,4 @@ public class FileLineReaderTest {
 
         assertEquals(lines, testLines);
     }
-
-   /* public static void main(String[] args) throws URISyntaxException {
-        String pathToResource = "testTaskData0.csv";
-        URL filePath = FileLineReaderTest
-                .class
-                .getClassLoader()
-                .getResource(pathToResource);
-        System.out.println(Paths.get(filePath.toURI()));
-    }*/
 }
